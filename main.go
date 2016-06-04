@@ -34,9 +34,13 @@ func main() {
 
 		sc.Serve(func(s gmux.Stream) {
 			log.Println("Got a stream!")
-			buf := make([]byte, 10)
-			s.Read(buf)
-			log.Printf("read: %q\n", buf)
+			out, err := ioutil.ReadAll(s)
+			if err != nil {
+				log.Println("error reading: ", err)
+				s.Close()
+				return
+			}
+			log.Printf("read: %q\n", out)
 			s.Close()
 			log.Println("closed stream")
 		})
